@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bài kiểm tra</title>
+    <meta charset="utf-8">
+    <style type="text/css">
+        .small-input {
+            width: 50px;
+        }
+    </style>
+</head>
+<body>
+    <?php
+        function groupData($data, $m, $n) {
+            $groupResult = [];
+            $index = 0;
+            for ($i=1; $i <= $m; $i++) { 
+               for ($k=1; $k <= $n ; $k++) { 
+                   $groupResult[$i][$k] = $data[$index];
+                   $index++;
+               }
+            }
+            return $groupResult;
+        }
+        function checkPrimeNumber($number) {
+            if($number < 2)
+                return false;
+            for ($i=2; $i < $number ; $i++) { 
+                if($number % $i == 0) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        function getPrimeNumber($data, $m, $n) {
+            $primeResult = [];
+            for ($i=1; $i <= $m; $i++) { 
+               for ($k=1; $k <= $n ; $k++) { 
+                   $checkPrimeNumber = checkPrimeNumber($data[$i][$k]);
+                   if($checkPrimeNumber == true) {
+                    $primeResult[] = 'M'.$i.' - N'.$k;
+                   }
+               }
+            }
+            return $primeResult;
+        }
+        function sortGroupData($data, $m, $n) {
+            $groupSortResult = [];
+            for ($i=$m; $i >= 1; $i--) { 
+                for ($k=$n; $k >= 1; $k--) { 
+                    $groupSortResult[$i][$k] = $data[$i][$k];
+                }
+            }
+            return $groupSortResult;
+        }
+        function displayData($data, $m, $n) {
+            echo '<table border="2">';
+            foreach ($data as $keyM) {
+                echo '<tr>';
+               foreach ($keyM as $keyN) {
+                   echo '<td>'.$keyN.'</td>';
+               }
+               echo '</tr>';
+            }
+            echo '</table>';
+        }
+        function getMax($data) {
+            $max = 0;
+            foreach ($data as $value) {
+                if($max < max($value)) {
+                    $max = max($value);
+                }
+            }
+            return $max;
+        }
+        function dump($data) {
+            echo '<pre>';
+            print_r($data);
+            echo '</pre>';
+        }
+
+        if(isset($_POST['data'])) {
+            $m = $_GET['m'];
+            $n = $_GET['n'];
+
+            $groupResult = groupData($_POST['data'], $m, $n);
+            $b = getPrimeNumber($groupResult, $m, $n);
+            $c = sortGroupData($groupResult, $m, $n);
+            echo '<h1>Câu A</h1>';
+            displayData($groupResult, $m, $n);
+            echo '<h1>Câu B</h1>';
+           foreach ($b as $key => $value) {
+              echo 'Vị trí: '. $value.'<br>';
+           }
+            echo '<h1>Câu C</h1>';
+            displayData($c, $m, $n);
+
+            echo '<h1>Câu D</h1>';
+            echo getMax($groupResult);
+             exit();
+        }
+
+       
+     ?>
+    <?php if(!isset($_GET['m']) || !isset($_GET['n'])) { ?>
+        <h1>Cho số m, n</h1>
+        <form method="GET">
+            <input type="number" name="m" min="1" max="100" placeholder="Nhap m">
+            <input type="number" name="n" min="1" max="100" placeholder="Nhap n">
+            <button type="submit">Tiếp nào</button>
+        </form>
+    <?php } else { ?>
+        <?php
+            $m = $_GET['m'];
+            $n = $_GET['n'];
+        ?>
+        <?php if(!is_numeric($m) || !is_numeric($n) ) { ?>
+            Phải nhập số vào m,n nhé! <a href="test.php">Nhập lại</a>
+        <?php } else { ?>
+        <h1>Câu a. Nhập giá trị cho ma trận</h1>
+        <form method="POST">
+            <table border="2">
+                <?php for ($i=1; $i <= $m; $i++) { ?>
+                <tr>
+                    <?php for ($k=1; $k <= $n; $k++) { ?>
+                       <td>m<?php echo $i; ?>n<?php echo $k; ?><input type="number" name="data[]" class="small-input" required="required"></td>
+                    <?php } ?>
+                </tr>
+                <?php } ?>
+
+            </table>
+            <br>
+            <button type="submit">Kết quả</button>
+        </form>
+        <?php } ?>
+    <?php } ?>
+</body>
+</html>
